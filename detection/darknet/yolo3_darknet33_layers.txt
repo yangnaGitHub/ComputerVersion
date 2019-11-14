@@ -1,0 +1,77 @@
+yolov3_darknet33_phone
+layer     filters    size              input                output
+    0 conv     32  3 x 3 / 1   224 x 224 x   3   ->   224 x 224 x  32  0.087 BFLOPs
+    1 conv     64  3 x 3 / 2   224 x 224 x  32   ->   112 x 112 x  64  0.462 BFLOPs
+    2 conv     32  1 x 1 / 1   112 x 112 x  64   ->   112 x 112 x  32  0.051 BFLOPs
+    3 conv     64  3 x 3 / 1   112 x 112 x  32   ->   112 x 112 x  64  0.462 BFLOPs
+    4 res    1                 112 x 112 x  64   ->   112 x 112 x  64
+    5 conv    128  3 x 3 / 2   112 x 112 x  64   ->    56 x  56 x 128  0.462 BFLOPs
+    6 conv     64  1 x 1 / 1    56 x  56 x 128   ->    56 x  56 x  64  0.051 BFLOPs
+    7 conv    128  3 x 3 / 1    56 x  56 x  64   ->    56 x  56 x 128  0.462 BFLOPs
+    8 res    5                  56 x  56 x 128   ->    56 x  56 x 128
+    9 conv     64  1 x 1 / 1    56 x  56 x 128   ->    56 x  56 x  64  0.051 BFLOPs
+   10 conv    128  3 x 3 / 1    56 x  56 x  64   ->    56 x  56 x 128  0.462 BFLOPs
+   11 res    8                  56 x  56 x 128   ->    56 x  56 x 128
+   12 conv    256  3 x 3 / 2    56 x  56 x 128   ->    28 x  28 x 256  0.462 BFLOPs
+   13 conv    128  1 x 1 / 1    28 x  28 x 256   ->    28 x  28 x 128  0.051 BFLOPs
+   14 conv    256  3 x 3 / 1    28 x  28 x 128   ->    28 x  28 x 256  0.462 BFLOPs
+   15 res   12                  28 x  28 x 256   ->    28 x  28 x 256
+   16 conv    128  1 x 1 / 1    28 x  28 x 256   ->    28 x  28 x 128  0.051 BFLOPs
+   17 conv    256  3 x 3 / 1    28 x  28 x 128   ->    28 x  28 x 256  0.462 BFLOPs
+   18 res   15                  28 x  28 x 256   ->    28 x  28 x 256
+   19 conv    128  1 x 1 / 1    28 x  28 x 256   ->    28 x  28 x 128  0.051 BFLOPs
+   20 conv    256  3 x 3 / 1    28 x  28 x 128   ->    28 x  28 x 256  0.462 BFLOPs
+   21 res   18                  28 x  28 x 256   ->    28 x  28 x 256
+   22 conv    128  1 x 1 / 1    28 x  28 x 256   ->    28 x  28 x 128  0.051 BFLOPs
+   23 conv    256  3 x 3 / 1    28 x  28 x 128   ->    28 x  28 x 256  0.462 BFLOPs
+   24 res   21                  28 x  28 x 256   ->    28 x  28 x 256
+   25 conv    512  3 x 3 / 2    28 x  28 x 256   ->    14 x  14 x 512  0.462 BFLOPs
+   26 conv    256  1 x 1 / 1    14 x  14 x 512   ->    14 x  14 x 256  0.051 BFLOPs
+   27 conv    512  3 x 3 / 1    14 x  14 x 256   ->    14 x  14 x 512  0.462 BFLOPs
+   28 res   25                  14 x  14 x 512   ->    14 x  14 x 512
+   29 conv    256  1 x 1 / 1    14 x  14 x 512   ->    14 x  14 x 256  0.051 BFLOPs
+   30 conv    512  3 x 3 / 1    14 x  14 x 256   ->    14 x  14 x 512  0.462 BFLOPs
+   31 res   28                  14 x  14 x 512   ->    14 x  14 x 512
+   32 conv    256  1 x 1 / 1    14 x  14 x 512   ->    14 x  14 x 256  0.051 BFLOPs
+   33 conv    512  3 x 3 / 1    14 x  14 x 256   ->    14 x  14 x 512  0.462 BFLOPs
+   34 res   31                  14 x  14 x 512   ->    14 x  14 x 512
+   35 conv    256  1 x 1 / 1    14 x  14 x 512   ->    14 x  14 x 256  0.051 BFLOPs
+   36 conv    512  3 x 3 / 1    14 x  14 x 256   ->    14 x  14 x 512  0.462 BFLOPs
+   37 res   34                  14 x  14 x 512   ->    14 x  14 x 512
+   38 conv   1024  3 x 3 / 2    14 x  14 x 512   ->     7 x   7 x1024  0.462 BFLOPs
+   39 conv    512  1 x 1 / 1     7 x   7 x1024   ->     7 x   7 x 512  0.051 BFLOPs
+   40 conv   1024  3 x 3 / 1     7 x   7 x 512   ->     7 x   7 x1024  0.462 BFLOPs
+   41 res   38                   7 x   7 x1024   ->     7 x   7 x1024
+   42 conv    512  1 x 1 / 1     7 x   7 x1024   ->     7 x   7 x 512  0.051 BFLOPs
+   43 conv   1024  3 x 3 / 1     7 x   7 x 512   ->     7 x   7 x1024  0.462 BFLOPs
+   44 res   41                   7 x   7 x1024   ->     7 x   7 x1024
+   45 conv    512  1 x 1 / 1     7 x   7 x1024   ->     7 x   7 x 512  0.051 BFLOPs
+   46 conv   1024  3 x 3 / 1     7 x   7 x 512   ->     7 x   7 x1024  0.462 BFLOPs
+   47 conv    512  1 x 1 / 1     7 x   7 x1024   ->     7 x   7 x 512  0.051 BFLOPs
+   48 conv   1024  3 x 3 / 1     7 x   7 x 512   ->     7 x   7 x1024  0.462 BFLOPs
+   49 conv     24  1 x 1 / 1     7 x   7 x1024   ->     7 x   7 x  24  0.002 BFLOPs
+   50 yolo
+   51 route  47
+   52 conv    256  1 x 1 / 1     7 x   7 x 512   ->     7 x   7 x 256  0.013 BFLOPs
+   53 upsample            2x     7 x   7 x 256   ->    14 x  14 x 256
+   54 route  53 37
+   55 conv    256  1 x 1 / 1    14 x  14 x 768   ->    14 x  14 x 256  0.077 BFLOPs
+   56 conv    512  3 x 3 / 1    14 x  14 x 256   ->    14 x  14 x 512  0.462 BFLOPs
+   57 conv    256  1 x 1 / 1    14 x  14 x 512   ->    14 x  14 x 256  0.051 BFLOPs
+   58 conv    512  3 x 3 / 1    14 x  14 x 256   ->    14 x  14 x 512  0.462 BFLOPs
+   59 conv     24  1 x 1 / 1    14 x  14 x 512   ->    14 x  14 x  24  0.005 BFLOPs
+   60 yolo
+   61 route  57
+   62 conv    128  1 x 1 / 1    14 x  14 x 256   ->    14 x  14 x 128  0.013 BFLOPs
+   63 upsample            2x    14 x  14 x 128   ->    28 x  28 x 128
+   64 route  63 24
+   65 conv    128  1 x 1 / 1    28 x  28 x 384   ->    28 x  28 x 128  0.077 BFLOPs
+   66 conv    256  3 x 3 / 1    28 x  28 x 128   ->    28 x  28 x 256  0.462 BFLOPs
+   67 conv    128  1 x 1 / 1    28 x  28 x 256   ->    28 x  28 x 128  0.051 BFLOPs
+   68 conv    256  3 x 3 / 1    28 x  28 x 128   ->    28 x  28 x 256  0.462 BFLOPs
+   69 conv    128  1 x 1 / 1    28 x  28 x 256   ->    28 x  28 x 128  0.051 BFLOPs
+   70 conv    256  3 x 3 / 1    28 x  28 x 128   ->    28 x  28 x 256  0.462 BFLOPs
+   71 conv     24  1 x 1 / 1    28 x  28 x 256   ->    28 x  28 x  24  0.010 BFLOPs
+   72 yolo
+Learning Rate: 0.001, Momentum: 0.9, Decay: 0.0005
+

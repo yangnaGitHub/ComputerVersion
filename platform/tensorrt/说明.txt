@@ -1,0 +1,77 @@
+一、介绍
+Tensorrt介绍和安装教程：
+	https://blog.csdn.net/zong596568821xp/article/details/86077553
+官方接口文档
+	https://docs.nvidia.com/deeplearning/sdk/tensorrt-api/index.html
+官方介绍：
+	https://docs.nvidia.com/deeplearning/sdk/tensorrt-developer-guide/index.html
+Tensorrt支持的层
+	https://bbs.gpuworld.cn/index.php?topic=73017.0
+
+
+二、tensorrt优化yolov3
+项目一: 
+https://github.com/xuwanqi/yolov3-tensorrt
+说明：可以定制化的修改cfg, 适用于自己训练的类别比较少的情况
+环境要求：
+	CUDA
+	cudnn
+	tensorrt5.0.2.6 
+
+	numpy==1.15.1
+	onnx==1.1.1
+	pycuda==2018.1.1
+	Pillow>=5.2.0
+	wget>=3.2
+
+
+1. 运行yolov3_to_onnx.py生成onnx文件，只能在python2运行
+	修改路径：
+		yolo_cfg_path = "./yolov3.cfg"
+		yolo_weights_path = "./yolov3.weights"
+		output_file_path = "yolov3.onnx"
+	三个output层：
+		output_tensor_dims['082_convolutional'] = [255, 19, 19]
+    		output_tensor_dims['094_convolutional'] = [255, 38, 38]
+    		output_tensor_dims['106_convolutional'] = [255, 76, 76]
+
+2. 运行onnx_to_tensorrt.py生成tensorrt引擎，在python3运行
+	修改路径：
+		onnx_file_path = './yolov3.onnx'
+		engine_file_path = "./yolov3.trt"
+
+3. 运行（python3）：见 run.sh
+
+
+
+项目二：
+https://github.com/Cw-zero/TensorRT_yolo3_module
+说明：适用于从coco的类中选择一个适合的类，如：person,car
+
+环境要求：
+	项目一环境 + pytorch
+1. 运行weight_to_onnx.py生成onnx文件，只能在python2运行，注意yolo权重名字要提前修改为yolov3-608.weights，
+2. onnx_to_trt_1batch.py生成tensorrt引擎，在python3运行
+3. 运行（python3）：见 run.sh
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
