@@ -1,0 +1,2 @@
+find . -name *.c | xargs grep -rn test_detector
+grep --include='*.c' -rn test_detector

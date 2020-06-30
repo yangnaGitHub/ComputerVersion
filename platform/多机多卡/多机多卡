@@ -1,0 +1,44 @@
+https://blog.csdn.net/xs11222211/article/details/82933764
+分布式训练实现方式
+ 数据并行:数据进行拆分,4块GPU batch size=1024,每块GPU就是256个数据,分别在每块GPU都跑BP算法,然后进行参数更新
+ 模型并行:模型拆分成多个部分,对于很大的网络结构在如此,一般没必要
+ 混合并行
+参数更新方式
+ 同步更新:每块GPU分别运行反向传播求出梯度,然后对梯度进行平均,更新参数
+  每次参数更新,要等待所有GPU梯度都计算完毕,需要有一个中心节点汇总梯度,并进行参数更新会影响训练速度
+ 异步更新:每块GPU各自进行反向传播,计算出梯度,各自对模型进行更新(不进行梯度平均)
+  各个GPU梯度更新不同步,可能导致梯度已更新,然而某个GPU的梯度还是上一时刻的梯度,导致优化过程不稳定
+ 各个GPU算力差不多时,推荐使用同步模式,否则使用异步模式
+
+torch的分布式实现方式
+ 没有采用主流的Parameter Server结构,直接用了Uber Horovod的形式(RingAllReduce)
+ PS计算模型的分布式,会遇到网络的问题,worker数量的增加加速比会迅速的恶化
+ RingAllReduce的计算方案,网络通信量不随着worker(GPU)的增加而增加,是一个恒定值
+  GPU集群被组织成一个逻辑环,每个GPU有一个左邻居一个右邻居,每个GPU只从左邻居接受数据并发送数据给右邻居
+  每次梯度每个gpu只获得部分梯度更新,等一个完整的Ring完成,每个GPU都获得了完整的参数
+  tcp的只能在一个机子上使用,详见ringallreduce_03.py,使用方式
+   python ringallreduce_03.py --init-method 'tcp://192.168.41.162:2222' --world-size 2 --rank 0
+   python ringallreduce_03.py --init-method 'tcp://192.168.41.162:2222' --world-size 2 --rank 1
+   ringallreduce_02.py是官网的教程
+
+
+
+
+
+TF的分布式实现方式
+ 图内分布式:计算图只有一个,需要一个中心节点分配计算任务并更新参数,由于中心节点的存在,中心节点容易成为瓶颈
+ 图间分布式:计算图有多个,不同计算图的相同变量通过tf.train.replica_device_setter函数放到同一个服务器上
+  各个计算图相互独立(参数只有一份,计算图有多个),并行度更高,适合异步更新tf.train.SyncReplicasOptimizer函数来帮助实现参数的同步更新
+  图间分布式,其基于gRPC通信框架,模型参数只有一份计算图有多份,一个master负责创建主session,多个worker执行计算图任务
+  模型训练过程中,每个计算图计算出各自梯度,然后对参数进行更新(同步更新,异步更新)
+gRPC:(google remote procedure call)
+ TensorFlow分布式并行基于gRPC通信框架,包括一个master创建Session,还有多个worker负责执行计算图中的任务
+ Cluster是Job的集合,Job是Task的集合
+分布式TF中,TF需要建立一个集群,然后在集群中建立两个job
+ ps job:负责参数初始化,参数更新,一个job下面可以有多个task(有多个task,说明有多台机器或者GPU负责参数初始化和更新)
+ woker job:负责计算图的运算,计算梯度,一个worker job下面也可以有很多个task(有多个task,说明有多台机器或者GPU负责运行计算图)
+ 参数异步更新的分布式训练
+  tf.train.ClusterSpec():创建一个集群对象
+  tf.train.Server():在这个集群上面创建一个服务器,根据实际情况,可以是参数服务器,也可以是计算服务器
+  tf.train.Supervisor():创建一个监视器,就是用来监控训练过程的,个人感觉主要就是方便恢复模型训练,其logdir参数为训练日志目录,如果里面有模型,则直接恢复训练所以如果想重新训练,需要删除这个目录
+  sv.managed_session():启动Session,相比于其他启动Session的方式,多了一些功能

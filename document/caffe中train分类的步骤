@@ -1,0 +1,27 @@
+caffe训练分类的步骤
+/home/yangna/yangna/project/grocery/data/body
+1.每个分类放在不同的文件夹中，3个文件夹放3类数据，以此类推
+ HAT
+ NO-HAT
+ OTHERS
+2.把3个文件夹的数据全部放在datas文件夹中
+3.根据第一步中的3个文件下对应分别生成3个txt
+ hat.txt -> 图片文件文件名 类型id
+ nohat.txt -> 图片文件文件名 类型id
+ others.txt -> 图片文件文件名 类型id
+4.第三步中的文件合并为data.txt
+5.生成train和test两个文件夹以及train.txt和test.txt
+ 包含train图片和train.txt -> train/文件名 类型id
+ 包含test图片和test.txt -> test/文件名 类型id
+6.resize
+7.利用caffe的tool生成lmdb文件和计算mean
+8.train(caffe中train)
+ caffe中文件的配置
+ solver.prototxt中各种配置
+  net的文件地址
+  snapshot_prefix的前缀
+ net的配置(train_val.prototxt)
+  TRAIN阶段的mean file和source(lmdb文件)的路径
+  TEST阶段的mean file和source(lmdb文件)的路径
+ 训练命令build/tools/caffe train -solver solver.prototxt的地址 -weights resume训练的权重的地址
+9.若是要get predict的话要写一个deploy.prototxt

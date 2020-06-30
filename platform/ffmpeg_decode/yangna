@@ -1,0 +1,7 @@
+g++ decode.cpp -L./usr/local/lib/  -lavformat -lavdevice  -lavcodec -lavutil  -lavfilter -lpostproc  -lswresample -lswscale -o decode
+
+
+g++ decode.cpp -L./home/yangna/yangna/tool/anaconda2/lib/  -lavformat -lavdevice  -lavcodec -lavutil  -lavfilter -lpostproc  -lswresample -lswscale -o decode
+
+
+g++ decode.cpp -lavformat -lavdevice -lavcodec -lavutil -lavfilter -lpostproc -lswresample -lswscale -lopencv_core -lopencv_imgcodecs -lopencv_imgproc -lopencv_highgui -o decode

@@ -1,0 +1,7 @@
+python文件使用的是libshmop.so
+libshmop.so是用shmop_py.cpp和shmop_py.h生成的动态链接库
+其中主要是shmop_py.h的在做操作
+    g++ -shared -fPIC shmop_py.cpp -o libshmop.so
+
+测试用例对接的是camid=0,threadid=1,使用测试用例直接python shmop.py即可
+若是其他请按照自己程序修改

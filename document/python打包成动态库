@@ -1,0 +1,5 @@
+pip3 install cython
+cython **.py
+gcc -c -fPIC -I/home/yangna/yangna/tool/anaconda2/envs/35/include/python3.5m/ **.c
+gcc -shared **.o -o **.so
+import **

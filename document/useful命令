@@ -1,0 +1,61 @@
+######find start#######################
+查找文件夹：
+ find 查找路径 -name 查找字串 -type d
+查找文件：
+ find 查找路径 -name 查找字串
+######find end#########################
+
+######grep start#######################
+查找文件中的某句话：
+ grep -rn 查找字串
+查找某些类型中的文件中是否存在某句话：
+ grep --include='*.cpp' -rn 查找字串
+查找文件中的某句话但不包括某种类型的文件：
+ grep --exclude='*.cpp' -rn 查找字串
+查找文件中不包含某些字串的：
+ grep -vrn 不包含的字串
+######grep end#########################
+
+######conda start#######################
+conda查看已有环境
+ conda info -e / conda env list
+conda创建环境
+ conda create --name 环境的名字 python=python的版本
+conda删除某个环境
+ conda remove --name 环境的名字 --all
+conda列举当前活跃环境下的所有包
+ conda list / conda list -n 环境的名字
+conda更新所有包
+ conda update --all
+conda生成欲分享环境的yml文件
+ conda env export > environment.yml
+conda本地使用yml文件创建文件
+ conda env create -f environment.yml
+######conda end#########################
+
+######sed start#######################
+######sed end#########################
+
+######ls start#######################
+ls参数
+ -t：按修改时间排序，最新的在前面
+按照时间升序
+ ls -lrt
+按照时间降序
+ ls -lt
+从大到小排序
+ ls -lS
+从小到大排序
+ ls -lrS
+######ls end#########################
+
+wc -l计数
+du -d 1 -h查看当前文件夹中所有文件的大小，占用多少空间
+df -lh
+1>/dev/null 2>&1输出从定向
+
+ssh root@117.80.87.110
+Shenlan2018
+scp NVIDIA-Linux-x86_64-* root@117.80.87.110:/root/deepblue
+ftp://58.216.158.83:9021/ dbuser slkj8888
+ftp://58.216.158.83:9021/%E7%A0%94%E7%A9%B6%E9%99%A2/%E6%99%BA%E6%85%A7%E5%9F%8E%E5%B8%82/%E5%BE%B7%E9%98%B3%E7%8C%AA%E5%9C%BA/

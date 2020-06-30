@@ -1,0 +1,6 @@
+tf.Session()构造阶段完成后,才能启动图,启动图的第一步是创建一个Session对象,如果无任何创建参数,会话构造器将启动默认图
+tf.InteractivesSession()为了便于使用诸如IPython之类的Python交互环境,可以使用InteractiveSession代替Session类,使用Tensor.eval()和Operation.run()方法代替Session.run(),这样可以避免使用一个变量来持有会话
+tf.train.Supervisor().managed_session() 
+ 自动去 checkpoint加载数据或者初始化数据
+ 自动有一个Saver,可以用来保存checkpoint
+ 有一个summary_computed用来保存Summary

@@ -1,0 +1,21 @@
+1.创建文件夹
+ VOC/Annotations 放所有的xml标记文件
+ VOC/ImageSets/Main (train.txt test.txt/train_val.txt val.txt) 文件中存储的是图片的文件名(不包含后缀)
+ VOC/JPEGImages 放所有训练的图片
+2.在scripts文件夹下生成train.txt(包含val.txt)和test.txt
+3.在cfg下新建voc_xxxx.data
+ 修改classes
+ train和valid的路径
+ names的路径
+ 以及snapshots存放的路径
+4.在data下新建voc_xxxx.names
+ 写下某个id对应的类别是啥
+5.在cfg下新建net,yolov3-voc-xxxx.cfg
+ 注释掉testing下面的batch和subdivisions
+ 放开train下面的batch和subdivisions
+ 修改yolo层的classes为当前的分类类别数(共三层)
+ 修改yolo层前一层卷积层的filters为(类别数+5)×3
+6.训练
+ ./darknet detector train cfg/voc_xxxx.data cfg/yolov3-voc-xxxx.cfg darknet53.conv.74
+7.测试
+ ./darknet detector test cfg/voc_xxxx.data cfg/yolov3-voc-xxxx.cfg backup/xxxx/yolov3-voc-xxxx.weights
