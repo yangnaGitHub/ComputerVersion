@@ -175,7 +175,7 @@ elif 'keypoints' == GEN_TYPE:
 ######labelme to coco end################
 
 ######coco pick one type to coco start################
-def pickTypeFromCoco(rootpath, outpath='/home/yangna/outcoco', types=[], wtype='instances', year=2014, pic_start=0, pic_size=1000):
+def pickTypeFromCoco(rootpath, outpath='/home/yangna/outcoco', types=[], wtype='instances', year=2017, pic_start=0, pic_size=1000):
     if 0 == len(types):
         return
     #train_path = os.path.join(rootpath, 'train%d' % year)
@@ -213,8 +213,8 @@ def pickTypeFromCoco(rootpath, outpath='/home/yangna/outcoco', types=[], wtype='
                     if skip_pic_index < pic_start:
                         continue
                     whichimages.append(annotation['image_id'])
-                    if pic_size == len(whichimages):
-                        break
+                    #if pic_size == len(whichimages):
+                    #    break
         for image in filedict['images']:
             if image['id'] in whichimages:
                 imageslist.append(image)
@@ -236,7 +236,15 @@ def pickTypeFromCoco(rootpath, outpath='/home/yangna/outcoco', types=[], wtype='
             fd.write(finallystr)
 
 #run instances
-pickTypeFromCoco('/yang_data/coco/2014', outpath='/home/yangna/out', types=['person'], pic_start=0, pic_size=2000)
+#['person', 'bicycle', 'car', 'motorcycle', 'bus', 'train', 'truck']
+#[{u'id': 1, u'name': u'person', u'supercategory': u'person'},
+# {u'id': 2, u'name': u'bicycle', u'supercategory': u'vehicle'},
+# {u'id': 3, u'name': u'car', u'supercategory': u'vehicle'},
+# {u'id': 4, u'name': u'motorcycle', u'supercategory': u'vehicle'},
+# {u'id': 6, u'name': u'bus', u'supercategory': u'vehicle'},
+# {u'id': 7, u'name': u'train', u'supercategory': u'vehicle'},
+# {u'id': 8, u'name': u'truck', u'supercategory': u'vehicle'}]
+pickTypeFromCoco('/yang_data/coco/2017', outpath='/home/yangna/out', types=['person', 'bicycle', 'car', 'motorcycle', 'bus', 'train', 'truck'], pic_start=0, pic_size=2000)
 ######coco pick one type to coco end################
 
 ######mix coco json file start################
@@ -313,6 +321,135 @@ mixJsonFile('/home/yangna/out/instances_train2014.json', '/home/yangna/yangna/pr
 mixJsonFile('/home/yangna/out/instances_val2014.json', '/home/yangna/yangna/project/pigmall/data/all/mixData-end/instances_val.json', '/home/yangna/instances_val.json')
 ######mix coco json file end################
 
+######show dataset start###################
+colors = [(0,0,255), (255,255,0), (0,255,255), (0,255,0), (255,0,0), (255,0,255), (128,128,128), (0,128,128), (128,128,0), (128,0,128), (255,255,255)]
+len_colors = len(colors)
+def showDateset(rootpath, files='instances', types='val'):
+    imagespath = ''
+    for afiles in os.listdir(rootpath):
+        if os.path.isdir(os.path.join(rootpath, afiles)) and afiles.startswith(types):
+            imagespath = os.path.join(rootpath, afiles)
+    if not imagespath:
+        return
+    annotations = os.path.join(rootpath, 'annotations')
+    f_annotations = os.listdir(annotations)
+    fileType = files+'_'+types
+    filename = os.path.join(annotations, [f_annotation for f_annotation in f_annotations if -1 != f_annotation.find(fileType)][0])
+    filedict = loadJson(filename)
+    categories = {}
+    for categorie in filedict['categories']:
+        categories[categorie['id']] = categorie['name']
+    
+    infos = {}
+    for annotation in filedict['annotations']:
+        if annotation['image_id'] in infos:
+            infos[annotation['image_id']]['annotations'].append(annotation)
+        else:
+            infos[annotation['image_id']] = {}
+            infos[annotation['image_id']]['annotations'] = [annotation]
+    for image in filedict['images']:
+        print(image['file_name'])
+        imagepath = os.path.join(imagespath, image['file_name'])
+        frame = cv2.imread(imagepath)
+        if image['id'] in infos:
+            color_maps = {}
+            color_map = (0,0,0)
+            color_index = 0
+            for annotation in infos[image['id']]['annotations']:
+                if annotation['category_id'] not in color_maps:
+                    if color_index < len_colors:
+                        color_maps[annotation['category_id']] = colors[color_index]
+                        color_index += 1
+                    else:
+                        color_maps[annotation['category_id']] = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+                color_map =  color_maps[annotation['category_id']]
+                bbox = map(lambda x:int(x+0.5), annotation['bbox'])
+                cv2.rectangle(frame, (bbox[0],bbox[1]), (bbox[0]+bbox[2],bbox[1]+bbox[3]), color_map, 2)
+                cv2.putText(frame, str(annotation['category_id'])+'_'+str(categories[annotation['category_id']]), (bbox[0]+bbox[2]//2,bbox[1]+bbox[3]//2), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color_map, 2)
+        cv2.imshow('images', frame)
+        keyvalue = cv2.waitKey(0)&0xFF
+        if ord('n') == keyvalue:
+            continue
+        elif ord('q') == keyvalue:
+            cv2.destroyAllWindows()
+            break
+        else:
+            pass
+showDateset(rootpath='/home/yangna/out')
+######show dataset end###################
+
+######coco to darknet start#################
+def convert(w, h, box):
+    dw = 1./w
+    dh = 1./h
+    x = box[0] + box[2]/2.0 - 1
+    y = box[1] + box[3]/2.0 - 1
+    x = x*dw
+    w = box[2]*dw
+    y = y*dh
+    h = box[3]*dh
+    return x,y,w,h
+
+def getInfo(imagesinfo, annotationsinfo, reids, annotation, filespath, pfilepath):
+    filedict = loadJson(annotation)
+    categories = {}
+    for index, categorie in enumerate(filedict['categories']):
+        categories[categorie['id']] = index
+    for images in filedict['images']:
+        if images['id'] not in imagesinfo:
+            imagesinfo[images['id']] = [os.path.join(pfilepath, images['file_name']), images['width'], images['height']]
+    for annotations in filedict['annotations']:
+        w,h = imagesinfo[annotations['image_id']][1],imagesinfo[annotations['image_id']][2]
+        x,y,w,h = convert(w,h,annotations['bbox'])
+#        if annotations['category_id'] not in reids:
+#            reids[annotations['category_id']] = len(reids);
+#        if annotations['image_id'] not in annotationsinfo:
+#            annotationsinfo[annotations['image_id']] = [[reids[annotations['category_id']],x,y,w,h]]
+#        else:
+#            annotationsinfo[annotations['image_id']].append([reids[annotations['category_id']],x,y,w,h])
+        if annotations['image_id'] not in annotationsinfo:
+            annotationsinfo[annotations['image_id']] = [[categories[annotations['category_id']],x,y,w,h]]
+        else:
+            annotationsinfo[annotations['image_id']].append([categories[annotations['category_id']],x,y,w,h])
+
+def cocoToDarknet(rootpath='/home/yangna/out', savePath='', iprefix='images', lprefix='labels', split=8):
+    annotations = glob.glob(os.path.join(rootpath, 'annotations', '*.json'))
+#    annotations = ['/home/yangna/out/instances_val2017.json']
+    imagesinfo = {}
+    annotationsinfo = {}
+    reids = {}
+    for annotation in annotations:
+        filepath = annotation.split('/')[-1].split('_')[-1][:-5]
+        saveldir = os.path.join(savePath, lprefix, filepath)
+        saveidir = os.path.join(savePath, iprefix, filepath)
+        if not os.path.exists(saveldir):
+            os.makedirs(saveldir)
+        if not os.path.exists(saveidir):
+            os.makedirs(saveidir)
+        filespath = os.path.join(rootpath, filepath)
+        getInfo(imagesinfo, annotationsinfo, reids, annotation, filespath, filepath)
+    imageslist = list(imagesinfo.keys())
+    random.shuffle(imageslist)
+    maxIndex = len(imageslist)
+    centerIndex = int(maxIndex/10*split+0.5)
+    saveldir = os.path.join(savePath, lprefix)
+    saveidir = os.path.join(savePath, iprefix)
+    with open(os.path.join(savePath, 'train.txt'), 'w') as fd:
+        [fd.write(os.path.join(saveidir, imagesinfo[image_id][0])+'\n') for image_id in imageslist[:centerIndex]]
+    with open(os.path.join(savePath, 'val.txt'), 'w') as fd:
+        [fd.write(os.path.join(saveidir, imagesinfo[image_id][0])+'\n') for image_id in imageslist[centerIndex:]]
+    for index in range(maxIndex):
+        image_id = imageslist[index]
+        string = ''
+        for content in annotationsinfo[image_id]:
+            string += ' '.join(list(map(str, content)))+'\n'
+#        print(string)
+        with open(os.path.join(saveldir, imagesinfo[image_id][0][:-3]+'txt'), 'w') as fd:
+            fd.write(string)
+        shutil.copyfile(os.path.join(rootpath, imagesinfo[image_id][0]), os.path.join(saveidir, imagesinfo[image_id][0]))
+
+cocoToDarknet(rootpath='/home/yangna/deepfashion', savePath='/home/yangna/yangna/code/detection/yolov5/deepfashion')
+######coco to darknet end###################
 #[u'info', u'images', u'licenses', u'type', u'annotations', u'categories']
 '''
 info dict

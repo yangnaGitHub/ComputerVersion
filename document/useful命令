@@ -49,6 +49,12 @@ ls参数
  ls -lrS
 ######ls end#########################
 
+######内核更新导致GPUdriver崩掉 start#######################
+ls /usr/src #查看显卡驱动版本
+sudo apt-get install dkms
+sudo dkms install -m nvidia -v 430.xx #显卡驱动版本
+######内核更新导致GPUdriver崩掉 end#######################
+
 wc -l计数
 du -d 1 -h查看当前文件夹中所有文件的大小，占用多少空间
 df -lh

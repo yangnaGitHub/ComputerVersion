@@ -99,3 +99,29 @@ def convertToJpg(s_path, s_formats=['.png']):
         cv2.imwrite(filename[:-3]+'jpg', image)
 #examples
 #convertToJpg('/home/yangna/mixData')
+
+def convertToPng(s_path, s_formats=['.png', '.jpg']):
+    filenames = []
+    for s_format in s_formats:
+        filenames += glob.glob(os.path.join(s_path, '*'+s_format))
+    print(filenames)
+    for filename in filenames:
+        image = cv2.imread(filename)
+#        cv2.imshow('test', image)
+#        cv2.waitKey(0)
+        print(filename[:-3]+'png')
+        cv2.imwrite(filename[:-3]+'bmp', image)
+convertToPng('/home/yangna/btv')
+
+import cv2
+import numpy as np
+def convertColor(basepath = '/home/yangna/yangna/code/useful_methods/DeepNudeCLI/mask'):
+    files = glob.glob(os.path.join(basepath, '*'))
+    for filename in files:
+        frame = cv2.imread(filename)
+        new_frame = frame.astype(np.int8)
+        new_frame = new_frame - 255
+        new_frame = np.abs(new_frame) % 256
+        new_frame[new_frame < 128] = 0
+        new_frame[new_frame > 128] = 255
+        cv2.imwrite(filename[:-4]+'_r'+filename[-4:], new_frame)
