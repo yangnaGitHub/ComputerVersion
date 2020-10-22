@@ -5,7 +5,7 @@
 
 ### 目标检测
 
-**[目标检测](https://github.com/yangnaGitHub/ComputerVersion/tree/master/detection)
+**[目标检测](https://github.com/yangnaGitHub/ComputerVersion/tree/master/detection)**
 * [darknet](https://github.com/yangnaGitHub/ComputerVersion/tree/master/detection/darknet)
 * [fcos](https://github.com/yangnaGitHub/ComputerVersion/tree/master/detection/fcos-paper.pdf)
 
@@ -13,14 +13,14 @@
 
 ### 目标分割
 
-**[目标分割](https://github.com/yangnaGitHub/ComputerVersion/tree/master/segmentation)
+**[目标分割](https://github.com/yangnaGitHub/ComputerVersion/tree/master/segmentation)**
 * [maskrcnn](https://github.com/yangnaGitHub/ComputerVersion/tree/master/segmentation/maskrcnn.pdf)
 
 ---
 
 ### 部署方式
 
-**[部署方式](https://github.com/yangnaGitHub/ComputerVersion/tree/master/platform)
+**[部署方式](https://github.com/yangnaGitHub/ComputerVersion/tree/master/platform)**
 * [ffmpeg decode](https://github.com/yangnaGitHub/ComputerVersion/tree/master/platform/ffmpeg_decode)
 * [GStreamer](https://github.com/yangnaGitHub/ComputerVersion/tree/master/platform/GStreamer)
 * [ncnn](https://github.com/yangnaGitHub/ComputerVersion/tree/master/platform/ncnn)
@@ -32,25 +32,25 @@
 
 ### 工具
 
-**[TOOLS](https://github.com/yangnaGitHub/ComputerVersion/tree/master/others)
+**[TOOLS](https://github.com/yangnaGitHub/ComputerVersion/tree/master/others)**
 
 ---
 
 ### 文档
 
-**[DOCUMENT](https://github.com/yangnaGitHub/ComputerVersion/tree/master/document)
+**[DOCUMENT](https://github.com/yangnaGitHub/ComputerVersion/tree/master/document)**
 
 ---
 
 ### OPENCV
 
-**[OPENCV](https://github.com/yangnaGitHub/ComputerVersion/tree/master/opencv)
+**[OPENCV](https://github.com/yangnaGitHub/ComputerVersion/tree/master/opencv)**
 
 ---
 
 ### PAPER
 
-**[Paper](https://github.com/yangnaGitHub/ComputerVersion/tree/master/paper)
+**[Paper](https://github.com/yangnaGitHub/ComputerVersion/tree/master/paper)**
 
 ---
 
