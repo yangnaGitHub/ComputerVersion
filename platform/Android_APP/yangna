@@ -1,0 +1,13 @@
+怎么将深度学习算法部署到手机上
+1.https://github.com/Tencent/ncnn/wiki/how-to-build#build-for-hisilicon-platform-with-cross-compiling
+  ncnn编译安装包之后Android JNI层使用的包
+2.https://zhuanlan.zhihu.com/p/137453394
+  opencv编译安装包之后Android JNI层使用的包
+3.将模型转换成ncnn使用的格式文件*.param和*.bin
+  将yolact转成ncnn
+  https://blog.csdn.net/sinat_17456165/article/details/105672407
+4.Android studio创建一个Native C++项目
+5.将模型文件放到assets文件夹中
+6.然后添加model.h和model.cpp文件去和人家的JNI做配合(参照ncnn中的写法)
+  https://github.com/Tencent/ncnn/blob/master/examples/yolact.cpp
+  init方法(初始化)+forword方法

@@ -7,6 +7,10 @@ sudo docker rm container_ID #删除容器
 sudo docker inspect -f '{{.Id}}' NAME #根据容器名字获得容器全部的ID
 #将当前文件夹的encoder.py copy到061899a71a1d2e608ec1c87f8f97b7faa623f7da25801c3afc8c0282fc45d4b0这个容器的/app下
 sudo docker cp encoder.py 061899a71a1d2e608ec1c87f8f97b7faa623f7da25801c3afc8c0282fc45d4b0:/app
+#将容器bfeb4572705b下的/app/omitlib copy到当前目录
+docker container cp bfeb4572705b:/app/omitlib .
+#将容器的/目录映射到本地的/home/yangna/docker/solar
+docker run -it -v /home/yangna/docker/solar:/ solar/ubuntu:16.04 /bin/bash
 
 sudo docker start 061899a71a1d #容器开始
 sudo docker attach 061899a71a1d #进入容器，exit就退出停止
@@ -17,7 +21,15 @@ sudo docker export #导出
 如果要使用GPU版本要安装nvidia-docker(要使用GPU的要安装)
 sudo docker run -it solar/ubuntu:16.04 /bin/bash 启动CPU版本的docker
 sudo nvidia-docker run -it solar/ubuntu:16.04 /bin/bash 这个才可以用本机的GPU
-sudo nvidia-docker run -d -P solar/ubuntu:16.04 python3.5 server.py
+sudo nvidia-docker run -d -P solar/ubuntu:16.04 python3.5 server.py#主机随机端口映射
+nvidia-docker run -it -p 5000:5000 solar/ubuntu:16.04 /bin/bash#主机端口5000映射5000端口
+
+容器的时候如何显示在主机上
+主机:xhost +
+docker 容器中:设置 export DISPLAY=ip:0
+或是挂载的时候:
+-v /tmp/.X11-unix:/tmp/.X11-uni
+-w设置工作目录
 
 你的镜像可以建立在基础镜像之上
 你本地建立了镜像就相当于建立了一个模板
@@ -25,3 +37,8 @@ sudo nvidia-docker run -d -P solar/ubuntu:16.04 python3.5 server.py
 然后你不需要容器了，可以使用sudo docker rm删除这个容器
 等没有一个容器的时候你才可以删除镜像
 有点像对象和实例的感觉，又有点像父类和子类的感觉
+
+sudo apt-get remove -y docker-*
+sudo apt-get purge -y docker-*
+
+

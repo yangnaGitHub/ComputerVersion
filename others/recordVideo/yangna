@@ -1,0 +1,3 @@
+crontab -e
+03 04 * * * /data/projects/video_collector/record.sh
+

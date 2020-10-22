@@ -73,7 +73,10 @@ def LabelmeGCJ(rootpath, images, categorieslist, after=3, wtype='instances', pha
             print(shapes['label'])
             typenames = shapes['label'].split('_')
             typename = typenames[0]
-            typeids = typenames[1]
+            if len(typenames) < 2:
+                typeids = '0'
+            else:
+                typeids = typenames[1]
             if  typename not in categoriesname:#pick some type
                 continue
             if typeids not in annotationsdicts:
@@ -159,19 +162,23 @@ def LabelmeToCoco(rootpath, pformat='jpg', categorieslist=[], train_val_test=[7,
 
 #run instances
 #categorieslist = [{'supercategory': 'animal', 'id': 1, 'name': 'pig'}]
-categorieslist_instances = [{'supercategory': 'person', 'id': 1, 'name': 'person'},
-                            {"supercategory": "animal", "id": 19, "name": "pig"}]
-categorieslist_keypoints = [{'supercategory': 'person', 'id': 1, 'name': 'person',
-                             'keypoints': ['nose', 'left_eye', 'right_eye', 'left_ear', 'right_ear', 'left_shoulder', 'right_shoulder', 'left_elbow', 'right_elbow', 'left_wrist', 'right_wrist', 'left_hip', 'right_hip', 'left_knee', 'right_knee', 'left_ankle', 'right_ankle'],
-                             'skeleton': [[16, 14], [14, 12], [17, 15], [15, 13], [12, 13], [6, 12], [7, 13], [6, 7], [6, 8], [7, 9], [8, 10], [9, 11], [2, 3], [1, 2], [1, 3], [2, 4], [3, 5], [4, 6], [5, 7]]},
-                            {"supercategory": "animal", "id": 19, "name": "pig",
-                             'keypoints': ['nose', 'left_shoulder', 'right_shoulder', 'left_wrist', 'right_wrist', 'left_hip', 'right_hip', 'left_ankle', 'right_ankle'],
-                             'skeleton': [[8, 6], [9, 7], [2, 6], [3, 7], [2, 4], [3, 5], [1, 2], [1, 3]]}]
-GEN_TYPE = 'instances'
-if 'instances' == GEN_TYPE:
-    LabelmeToCoco('/home/yangna/pics', pformat='jpg', categorieslist=categorieslist_instances, train_val_test=[8, 2, 0], wtype=GEN_TYPE)
-elif 'keypoints' == GEN_TYPE:
-    LabelmeToCoco('/home/yangna/pics', pformat='jpg', categorieslist=categorieslist_keypoints, train_val_test=[8, 2, 0], wtype=GEN_TYPE)
+def generateFiles(root_path='/home/yangna/pics', categorieslist=None, GEN_TYPE = 'instances'):
+    if 'instances' == GEN_TYPE:
+        if categorieslist is None:
+            categorieslist = [{'supercategory': 'person', 'id': 1, 'name': 'person'},
+                              {'supercategory': 'person', "id": 19, 'name': "pig"}]
+        LabelmeToCoco(root_path, pformat='jpg', categorieslist=categorieslist, train_val_test=[8, 2, 0], wtype=GEN_TYPE)
+    elif 'keypoints' == GEN_TYPE:
+        if categorieslist is None:
+            categorieslist = [{'supercategory': 'person', 'id': 1, 'name': 'person',
+                               'keypoints': ['nose', 'left_eye', 'right_eye', 'left_ear', 'right_ear', 'left_shoulder', 'right_shoulder', 'left_elbow', 'right_elbow', 'left_wrist', 'right_wrist', 'left_hip', 'right_hip', 'left_knee', 'right_knee', 'left_ankle', 'right_ankle'],
+                               'skeleton': [[16, 14], [14, 12], [17, 15], [15, 13], [12, 13], [6, 12], [7, 13], [6, 7], [6, 8], [7, 9], [8, 10], [9, 11], [2, 3], [1, 2], [1, 3], [2, 4], [3, 5], [4, 6], [5, 7]]},
+                              {'supercategory': 'animal', 'id': 19, 'name': 'pig',
+                               'keypoints': ['nose', 'left_shoulder', 'right_shoulder', 'left_wrist', 'right_wrist', 'left_hip', 'right_hip', 'left_ankle', 'right_ankle'],
+                               'skeleton': [[8, 6], [9, 7], [2, 6], [3, 7], [2, 4], [3, 5], [1, 2], [1, 3]]}]
+        LabelmeToCoco(root_path, pformat='jpg', categorieslist=categorieslist, train_val_test=[8, 2, 0], wtype=GEN_TYPE)
+gen_categories = [{'supercategory': 'carbody', 'id': 1, 'name': 'gap'}]
+generateFiles(root_path='/home/yangna/12345', categorieslist=gen_categories)
 ######labelme to coco end################
 
 ######coco pick one type to coco start################
@@ -348,7 +355,10 @@ def showDateset(rootpath, files='instances', types='val'):
             infos[annotation['image_id']] = {}
             infos[annotation['image_id']]['annotations'] = [annotation]
     for image in filedict['images']:
-        print(image['file_name'])
+        #print(image['file_name'])
+        if -1 == image['file_name'].find('101338'):
+            continue
+        print(infos[image['id']])
         imagepath = os.path.join(imagespath, image['file_name'])
         frame = cv2.imread(imagepath)
         if image['id'] in infos:
@@ -375,7 +385,7 @@ def showDateset(rootpath, files='instances', types='val'):
             break
         else:
             pass
-showDateset(rootpath='/home/yangna/out')
+showDateset(rootpath='/home/yangna/deepfashion', types='train')
 ######show dataset end###################
 
 ######coco to darknet start#################
@@ -449,6 +459,28 @@ def cocoToDarknet(rootpath='/home/yangna/out', savePath='', iprefix='images', lp
         shutil.copyfile(os.path.join(rootpath, imagesinfo[image_id][0]), os.path.join(saveidir, imagesinfo[image_id][0]))
 
 cocoToDarknet(rootpath='/home/yangna/deepfashion', savePath='/home/yangna/yangna/code/detection/yolov5/deepfashion')
+
+
+def correctFiles(root_path):
+    filelists = glob.glob(os.path.join(root_path, '*.txt'))
+    for filepath in filelists:
+        #filepath = '/home/yangna/yangna/code/detection/yolov5/deepfashion/labels/train2017/101338.txt'
+        with open(filepath, 'r') as fd:
+            contents = fd.readlines()
+        ifchange = False
+        string = ''
+        for content in contents:
+            rowValue = list(map(lambda x: 0.0 if float(x) < 0.0 else float(x), content[:-1].split(' ')[1:]))
+            if 4 == rowValue.count(0.0):
+                ifchange = True
+                continue
+            #print(content, rowValue, rowValue.count(0.0))
+            string += content
+        if ifchange:
+            print(filepath)
+            with open(filepath, 'w') as fd:
+                fd.write(string)
+correctFiles('/home/yangna/yangna/code/detection/yolov5/deepfashion/labels/val2017')
 ######coco to darknet end###################
 #[u'info', u'images', u'licenses', u'type', u'annotations', u'categories']
 '''

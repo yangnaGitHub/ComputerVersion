@@ -1,0 +1,42 @@
+https://github.com/Tencent/ncnn
+https://github.com/Tencent/ncnn/wiki/use-ncnn-with-alexnet.zh
+
+examples
+ 实现一个简单的caffe的分类
+
+caffe如何转ncnn
+1.老版本的caffe网络和模型转换为新版(ncnn的工具只认识新版)
+ upgrade_net_proto_text [老prototxt] [新prototxt]
+ upgrade_net_proto_binary [老caffemodel] [新caffemodel]
+2.输入层改用Input,第一个dim设为1
+ layer {
+  name: "data"
+  type: "Input"
+  top: "data"
+  input_param { shape: { dim: 1 dim: 3 dim: 227 dim: 227 } }
+ }
+3.caffe2ncnn转换为ncnn的网络描述和模型
+ caffe2ncnn deploy.prototxt bvlc_alexnet.caffemodel alexnet.param alexnet.bin
+ ncnn2mem工具转换为二进制描述文件和内存模型
+  ncnn2mem alexnet.param alexnet.bin alexnet.id.h alexnet.mem.h
+其他转ncnn https://blog.csdn.net/sinat_17456165/article/details/105672407
+1.先转onnx
+2.转ncnn
+ ./onnx2ncnn yolact-sim.onnx yolact.param yolact.bin
+ ncnnoptimize工具实现了很多种算子融合
+ 0表示fp32模型,65536 表示精简为fp16模型
+ ./ncnnoptimize yolact.param yolact.bin yolact-opt.param yolact-opt.bin 0
+
+加载模型
+ 直接加载param和bin
+  net.load_param("alexnet.param");
+  net.load_model("alexnet.bin");
+ 加载二进制的param.bin和bin,适合APP分发模型资源
+  net.load_param_bin("alexnet.param.bin");
+  net.load_model("alexnet.bin");
+ 从内存引用加载网络和模型,没有可见字符串,模型数据全在代码里头,没有任何外部文件,,android apk打包的资源文件读出来也是内存块
+  #include "alexnet.mem.h"
+  net.load_param(alexnet_param_bin);
+  net.load_model(alexnet_bin);
+卸载模型
+ net.clear();

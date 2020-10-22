@@ -31,6 +31,16 @@ conda生成欲分享环境的yml文件
  conda env export > environment.yml
 conda本地使用yml文件创建文件
  conda env create -f environment.yml
+添加清华源
+ conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
+设置搜索时显示通道地址
+ conda config --set show_channel_urls yes
+看看当前的cofig是什么样的
+ conda config --show
+查看添加的镜像
+ conda config --get channels
+删除源
+ conda config --remove-key channels
 ######conda end#########################
 
 ######sed start#######################
@@ -48,12 +58,6 @@ ls参数
 从小到大排序
  ls -lrS
 ######ls end#########################
-
-######内核更新导致GPUdriver崩掉 start#######################
-ls /usr/src #查看显卡驱动版本
-sudo apt-get install dkms
-sudo dkms install -m nvidia -v 430.xx #显卡驱动版本
-######内核更新导致GPUdriver崩掉 end#######################
 
 wc -l计数
 du -d 1 -h查看当前文件夹中所有文件的大小，占用多少空间
