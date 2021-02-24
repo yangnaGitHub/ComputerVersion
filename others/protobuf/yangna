@@ -1,0 +1,18 @@
+1.编写proto文件
+2.安装编译工具
+  pip install grpcio
+  pip install grpcio-tools
+3.自动生成文件
+  python -m grpc_tools.protoc --python_out=. --grpc_python_out=. -I. test.proto
+  test_pb2.py 用来和protobuf数据进行交互
+  test_pb2_grpc.py 用来和grpc进行交互
+4.编写server文件
+5.编写client文件
+
+根据不同的业务场景,grpc支持4种通信方式
+ 客服端一次请求,服务器一次应答
+ 客服端一次请求,服务器多次应答(流式)
+ 客服端多次请求(流式),服务器一次应答
+ 客服端多次请求(流式),服务器多次应答(流式)
+proto中想要表示流式传输,只需要添加stream关键字即可
+https://www.jianshu.com/p/43fdfeb105ff?from=timeline&isappinstalled=0
